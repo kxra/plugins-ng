@@ -1,8 +1,27 @@
-	{-# LANGUAGE OverloadedStrings, TemplateHaskell #-}
+{-# LANGUAGE OverloadedStrings #-}  -- For FilePath
+{-# LANGUAGE TemplateHaskell #-}
 
 module Plugins.Filewatch where
 
-import ../Base.hs
+import Control.Applicative
+import Control.Concurrent.STM
+import Control.Concurrent.STM.TMVar
+import Data.Map (Map)
+import Data.Maybe (catMaybes)
+import qualified Data.Map as Map
+import Data.Monoid (mempty)
+import Data.String (fromString)
+import Filesystem.Path (FilePath, dirname, filename)
+import GHC
+import GhcMonad                   (liftIO) -- from ghc7.7 and up you can use the usual
+import Language.Haskell.TH.Syntax as TH (Name(Name))
+import System.FSNotify
+import Unsafe.Coerce (unsafeCoerce)
+import Prelude hiding (FilePath)
+import Language.Haskell.TH          (ExpQ, appE, varE)
+import Language.Haskell.TH.Lift     (lift)
+
+import Plugins.Base
 
 -- | predicate: event caused by file being added
 -- filewatch
@@ -75,7 +94,7 @@ reload ph newSyms =
          setTargets' syms
          vals <- loadSyms syms
          updateWatches ph
-         return $ Ma.fpromList $ zip names vals
+         return $ Map.fromList $ zip names vals
        atomically $ putTMVar (phSymMap ph) m'
 
 -- | look at the current module graph and update the list of watched

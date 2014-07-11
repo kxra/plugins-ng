@@ -11,31 +11,12 @@ loaded into the running process.
 
 module Plugins.Base where
 
-import Control.Applicative
-import Control.Concurrent.STM
-import Control.Concurrent.STM.TMVar
-import Control.Monad
-import Data.Map (Map)
-import Data.Maybe (catMaybes)
-import qualified Data.Map as Map
-import Data.Monoid (mempty)
-import Data.IORef
-import Data.String (fromString)
-import DynFlags
-import Filesystem.Path (FilePath, dirname, filename)
+import DynFlags (defaultFatalMessager, defaultFlushOut)
 import GHC
-import GHC.Paths
+import GHC.Paths (libdir)
 import GhcMonad                   (liftIO) -- from ghc7.7 and up you can use the usual
 import Language.Haskell.TH.Syntax as TH (Name(Name),NameFlavour(NameG), NameSpace(VarName), OccName(..), ModName(..))
 import Module (moduleNameSlashes)
-import System.FSNotify
-import Unsafe.Coerce
-import qualified Filter as F
-import Prelude hiding (FilePath, filter)
-import Language.Haskell.TH          (ExpQ, appE, varE)
-import Language.Haskell.TH.Lift     (lift)
-
-import HscTypes
 
 {-
 

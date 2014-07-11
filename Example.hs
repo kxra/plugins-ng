@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 module Main where
 
-import Plugins
+import Plugins.Filewatch
 import qualified Filter as F
 
 main :: IO ()
